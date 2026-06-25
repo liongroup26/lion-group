@@ -53,6 +53,11 @@ export function Navbar() {
             fetchPriority="high"
             decoding="async"
             className="h-10 w-auto transition group-hover:opacity-80"
+            style={
+              isFloating
+                ? { filter: "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.6))" }
+                : undefined
+            }
           />
         </Link>
 

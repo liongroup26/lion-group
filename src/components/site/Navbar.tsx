@@ -14,7 +14,6 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
 
-  const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   // SCROLL DETECTION
@@ -70,38 +69,17 @@ export function Navbar() {
     return () => observers.forEach((obs) => obs.disconnect());
   }, []);
 
-  // KEYBOARD & FOCUS
-  useEffect(() => {
-    if (!open) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        menuButtonRef.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open]);
-
-  // SCROLL LOCK
+  // SCROLL LOCK quando menu è aperto
   useEffect(() => {
     if (open) {
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
       return () => {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
         document.body.style.overflow = "";
-        window.scrollTo(0, scrollY);
       };
     }
   }, [open]);
 
-  // SMOOTH SCROLL
+  // SMOOTH SCROLL HANDLER
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
       e.preventDefault();
@@ -164,11 +142,19 @@ export function Navbar() {
                   <a
                     key={item.href}
                     href={item.href}
-                    onClick={(e) => handleNavClick(e, item.href)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById(id);
+                      if (el) {
+                        const offset = 80;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top, behavior: "smooth" });
+                      }
+                    }}
                     className={`relative text-[11px] font-medium uppercase tracking-[0.25em] transition-colors duration-300 ${
                       isActive
                         ? isLight ? "text-white" : "text-black"
-                        : isLight ? "text-white/70 hover:text-white" : "text-black/70 hover:text-black"
+                        : isLight ? "text-white/70 hover:text-white" : "text-black/60 hover:text-black"
                     }`}
                   >
                     {item.label}
@@ -184,7 +170,15 @@ export function Navbar() {
             <div className="hidden lg:block">
               <a
                 href="#contatti"
-                onClick={(e) => handleNavClick(e, "#contatti")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const el = document.getElementById("contatti");
+                  if (el) {
+                    const offset = 80;
+                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top, behavior: "smooth" });
+                  }
+                }}
                 className={`inline-flex items-center gap-2 border px-6 py-2.5 text-[10px] font-medium uppercase tracking-[0.25em] transition-all duration-300 ${
                   isLight
                     ? "border-white/50 text-white hover:border-white hover:bg-white hover:text-black"
@@ -192,57 +186,46 @@ export function Navbar() {
                 }`}
               >
                 <span>Prenota un incontro</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-300">→</span>
               </a>
             </div>
 
-{/* MOBILE HAMBURGER */}
-<button
-  ref={menuButtonRef}
-  onClick={() => setOpen(!open)}
-  aria-expanded={open}
-  aria-label={open ? "Chiudi menu" : "Apri menu"}
-  className="lg:hidden relative flex h-10 w-10 items-center justify-center"
->
-  <span className="relative flex h-5 w-6 flex-col justify-between">
-    {/* Top line */}
-    <span
-      className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        open ? "translate-y-[9px] rotate-45" : ""
-      } ${isLight ? "bg-white" : "bg-black"}`}
-    />
-    {/* Middle line */}
-    <span
-      className={`block h-px w-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
-      } ${isLight ? "bg-white" : "bg-black"}`}
-    />
-    {/* Bottom line */}
-    <span
-      className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-        open ? "-translate-y-[9px] -rotate-45" : ""
-      } ${isLight ? "bg-white" : "bg-black"}`}
-    />
-  </span>
-</button>
+            {/* MOBILE HAMBURGER - 3 LINEE */}
+            <button
+              ref={menuButtonRef}
+              onClick={() => setOpen(!open)}
+              aria-expanded={open}
+              aria-label={open ? "Chiudi menu" : "Apri menu"}
+              className="lg:hidden relative flex h-10 w-10 items-center justify-center z-50"
+            >
+              <span className="relative flex h-5 w-6 flex-col justify-between">
+                <span
+                  className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open ? "translate-y-[9px] rotate-45" : ""
+                  } ${isLight ? "bg-white" : "bg-black"}`}
+                />
+                <span
+                  className={`block h-px w-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
+                  } ${isLight ? "bg-white" : "bg-black"}`}
+                />
+                <span
+                  className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open ? "-translate-y-[9px] -rotate-45" : ""
+                  } ${isLight ? "bg-white" : "bg-black"}`}
+                />
+              </span>
+            </button>
           </div>
         </div>
-      </header>
 
-      {/* MOBILE MENU */}
-      <div
-        className={`fixed inset-0 z-40 lg:hidden transition-opacity duration-500 ${
-          open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      >
-        <div className="absolute inset-0 bg-black/95" onClick={() => setOpen(false)} />
+        {/* MOBILE MENU - DROPDOWN SEMPLICE */}
         <div
-          ref={menuRef}
-          role="navigation"
-          aria-label="Menu di navigazione"
-          className="relative flex h-full flex-col justify-center px-8 py-12"
+          className={`lg:hidden absolute top-full left-0 right-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
+            open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          } ${scrolled ? "bg-white/95 backdrop-blur-md" : "bg-black/95 backdrop-blur-md"}`}
         >
-          <nav className="flex flex-col gap-6">
+          <nav className="flex flex-col px-6 py-6 gap-2">
             {NAV.map((item) => {
               const id = item.href.replace("#", "");
               const isActive = activeSection === id;
@@ -251,26 +234,37 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`text-3xl font-light uppercase tracking-[0.15em] transition-colors duration-300 ${
-                    isActive ? "text-white" : "text-white/50 hover:text-white"
+                  className={`px-4 py-3 text-[11px] font-medium uppercase tracking-[0.25em] transition-all duration-300 ${
+                    isActive
+                      ? scrolled
+                        ? "text-black bg-black/5"
+                        : "text-white bg-white/10"
+                      : scrolled
+                      ? "text-black/70 hover:text-black hover:bg-black/5"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   {item.label}
                 </a>
               );
             })}
+            
+            <div className="pt-4 mt-4 border-t border-current border-opacity-20">
+              <a
+                href="#contatti"
+                onClick={(e) => handleNavClick(e, "#contatti")}
+                className={`block px-4 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-center ${
+                  scrolled
+                    ? "bg-black text-white hover:bg-black/90"
+                    : "bg-white text-black hover:bg-white/90"
+                } transition-all duration-300`}
+              >
+                Prenota un incontro
+              </a>
+            </div>
           </nav>
-          <div className="absolute bottom-12 left-8 right-8">
-            <a
-              href="#contatti"
-              onClick={(e) => handleNavClick(e, "#contatti")}
-              className="block border-t border-white/20 pt-8 text-[10px] uppercase tracking-[0.25em] text-white/60"
-            >
-              Contattaci
-            </a>
-          </div>
         </div>
-      </div>
+      </header>
     </>
   );
 }

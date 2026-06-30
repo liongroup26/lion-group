@@ -168,7 +168,7 @@ export function Navbar() {
                     className={`relative text-[11px] font-medium uppercase tracking-[0.25em] transition-colors duration-300 ${
                       isActive
                         ? isLight ? "text-white" : "text-black"
-                        : isLight ? "text-white/70 hover:text-white" : "text-black/60 hover:text-black"
+                        : isLight ? "text-white/70 hover:text-white" : "text-black/70 hover:text-black"
                     }`}
                   >
                     {item.label}

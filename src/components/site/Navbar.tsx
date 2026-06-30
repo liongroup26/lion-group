@@ -96,6 +96,8 @@ export function Navbar() {
   );
 
   const isLight = !scrolled;
+  // Colore hamburger: bianco quando menu chiuso su hero scuro, altrimenti nero
+  const hamburgerColor = !open && isLight ? "bg-white" : "bg-black";
 
   return (
     <>
@@ -126,7 +128,8 @@ export function Navbar() {
                 style={
                   isLight
                     ? {
-                        filter: "brightness(0) invert(1) drop-shadow(0 2px 10px rgba(0,0,0,0.3))",
+                        filter:
+                          "brightness(0) invert(1) drop-shadow(0 2px 10px rgba(0,0,0,0.3))",
                       }
                     : undefined
                 }
@@ -147,14 +150,19 @@ export function Navbar() {
                       const el = document.getElementById(id);
                       if (el) {
                         const offset = 80;
-                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        const top =
+                          el.getBoundingClientRect().top + window.scrollY - offset;
                         window.scrollTo({ top, behavior: "smooth" });
                       }
                     }}
                     className={`relative text-[11px] font-medium uppercase tracking-[0.25em] transition-colors duration-300 ${
                       isActive
-                        ? isLight ? "text-white" : "text-black"
-                        : isLight ? "text-white/70 hover:text-white" : "text-black/60 hover:text-black"
+                        ? isLight
+                          ? "text-white"
+                          : "text-black"
+                        : isLight
+                        ? "text-white/70 hover:text-white"
+                        : "text-black/60 hover:text-black"
                     }`}
                   >
                     {item.label}
@@ -175,7 +183,8 @@ export function Navbar() {
                   const el = document.getElementById("contatti");
                   if (el) {
                     const offset = 80;
-                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                    const top =
+                      el.getBoundingClientRect().top + window.scrollY - offset;
                     window.scrollTo({ top, behavior: "smooth" });
                   }
                 }}
@@ -190,7 +199,7 @@ export function Navbar() {
               </a>
             </div>
 
-            {/* MOBILE HAMBURGER - 3 LINEE */}
+            {/* MOBILE HAMBURGER */}
             <button
               ref={menuButtonRef}
               onClick={() => setOpen(!open)}
@@ -201,29 +210,29 @@ export function Navbar() {
               <span className="relative flex h-5 w-6 flex-col justify-between">
                 <span
                   className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    open ? "translate-y-[9px] rotate-45 bg-black" : ""
-                  } ${!open && isLight ? "bg-white" : !open ? "bg-black" : ""}`}
+                    open ? "translate-y-[9px] rotate-45" : ""
+                  } ${hamburgerColor}`}
                 />
                 <span
                   className={`block h-px w-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
-                  } ${!open && isLight ? "bg-white" : "bg-black"}`}
+                  } ${hamburgerColor}`}
                 />
                 <span
                   className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    open ? "-translate-y-[9px] -rotate-45 bg-black" : ""
-                  } ${!open && isLight ? "bg-white" : !open ? "bg-black" : ""}`}
+                    open ? "-translate-y-[9px] -rotate-45" : ""
+                  } ${hamburgerColor}`}
                 />
               </span>
             </button>
           </div>
         </div>
 
-        {/* MOBILE MENU - SEMPRE BIANCO */}
+        {/* MOBILE MENU - VETRO SMERIGLIATO */}
         <div
           className={`lg:hidden absolute top-full left-0 right-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
             open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          } bg-white/98 backdrop-blur-md shadow-lg`}
+          } bg-white/90 backdrop-blur-xl border-t border-black/5 shadow-sm`}
         >
           <nav className="flex flex-col px-6 py-6 gap-2">
             {NAV.map((item) => {
@@ -247,7 +256,7 @@ export function Navbar() {
                 </a>
               );
             })}
-            
+
             <div className="pt-4 mt-4 border-t border-black/10">
               <a
                 href="#contatti"

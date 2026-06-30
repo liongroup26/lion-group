@@ -173,7 +173,7 @@ export function Navbar() {
                   >
                     {item.label}
                     {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-px bg-amber-600" />
+                      <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-amber-600" />
                     )}
                   </a>
                 );

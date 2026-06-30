@@ -3,7 +3,7 @@ import heroYacht from "@/assets/hero-yacht-4k.jpg";
 export function Hero() {
   return (
     <section className="relative min-h-[100svh] w-full overflow-hidden bg-ink">
-      {/* Hero image */}
+      {/* Hero image: luxury yacht at sea */}
       <img
         src={heroYacht}
         alt="Yacht di lusso in navigazione al tramonto in mare aperto"
@@ -14,7 +14,7 @@ export function Hero() {
         className="absolute inset-0 h-full w-full object-cover scale-105 animate-hero-pan"
       />
 
-      {/* Cinematic vignette */}
+      {/* Cinematic vignette / contrast lift */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -24,7 +24,7 @@ export function Hero() {
         }}
       />
 
-      {/* Gold light leak */}
+      {/* Subtle gold light leak */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-40 mix-blend-screen"
@@ -34,7 +34,7 @@ export function Hero() {
         }}
       />
 
-      {/* Top fade per navbar */}
+      {/* Tiny top fade so the navbar stays readable */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 h-40 z-[1]"
@@ -44,7 +44,8 @@ export function Hero() {
         }}
       />
 
-      {/* Bottom vignette */}
+
+      {/* Bottom vignette: darkens the area under CTAs so they pop */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[55vh]"
@@ -54,57 +55,46 @@ export function Hero() {
         }}
       />
 
-      {/* ============================================ */}
-      {/* SOTTOTITOLO - Piccolo, elegante, in basso */}
-      {/* ============================================ */}
-      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-40 sm:pb-48">
-        <div
-          className="animate-fade-up-blur text-center max-w-2xl"
-          style={{ animationDelay: "0.4s" }}
-        >
-          <p className="text-sm md:text-base text-white/80 font-light tracking-[0.15em] leading-relaxed">
-            Eccellenza e innovazione nei settori automotive, real estate e investimenti.
-            <br className="hidden md:block" />
-            Un approccio visionario al valore.
-          </p>
-        </div>
-      </div>
+      {/* Subtle gold glow behind CTAs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-28 left-1/2 z-[2] h-32 w-[28rem] -translate-x-1/2 opacity-30 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(200,170,95,0.35), transparent 70%)",
+        }}
+      />
 
-      {/* ============================================ */}
-      {/* CTAs - Coerenti con la navbar */}
-      {/* ============================================ */}
-      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-24 sm:pb-28">
+      {/* CTAs anchored toward the bottom */}
+      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-32 sm:pb-36">
         <div
-          className="animate-fade-up-blur flex flex-wrap items-center justify-center gap-6"
-          style={{ animationDelay: "0.7s" }}
+          className="animate-fade-up-blur flex flex-wrap items-center justify-center gap-4"
+          style={{ animationDelay: "0.2s" }}
         >
-          {/* Primary CTA */}
           <a
             href="#divisioni"
-            className="group inline-flex items-center gap-3 border border-white/50 px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-white transition-all duration-500 hover:bg-white hover:text-black hover:border-white"
+            className="cta-luxury cta-luxury-dark group inline-flex items-center gap-3 rounded-full bg-white px-8 py-4 text-[12px] font-medium uppercase tracking-luxury text-ink hover:bg-white shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)]"
           >
-            Esplora le Divisioni
+            Esplora l'Eccellenza
             <span className="transition-transform duration-500 group-hover:translate-x-1">→</span>
           </a>
-
-          {/* Secondary CTA - solo testo */}
           <a
             href="#contatti"
-            className="group inline-flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.28em] text-white/80 transition-colors duration-500 hover:text-white border-b border-white/30 pb-1"
+            className="cta-luxury group inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/5 px-8 py-4 text-[12px] font-medium uppercase tracking-luxury text-white hover:bg-white/10 hover:border-white/60"
           >
             Consulenza Esclusiva
           </a>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Cinematic scroll indicator */}
       <div
         aria-hidden
         className="animate-fade-up-blur absolute bottom-6 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-3"
-        style={{ animationDelay: "1s" }}
+        style={{ animationDelay: "0.6s" }}
       >
-        <span className="text-[10px] uppercase tracking-[0.3em] text-white/70">
-          Scopri
+        <span className="text-[10px] uppercase tracking-luxury text-white/70">
+          Scorri
         </span>
         <span className="relative block h-12 w-px overflow-hidden bg-white/15">
           <span

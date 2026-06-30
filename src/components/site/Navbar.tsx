@@ -26,7 +26,7 @@ export function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl text-foreground shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
+          ? "bg-background/80 backdrop-blur-xl text-foreground shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
           : "bg-transparent text-white"
       }`}
     >
@@ -36,26 +36,16 @@ export function Navbar() {
         }`}
       >
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center gap-3 group"
-          style={
-            isFloating
-              ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.55))" }
-              : undefined
-          }
-        >
+        <Link to="/" className="flex items-center group">
           <img
             src={logo}
             alt="Lion Group"
-            width={180}
-            height={60}
-            className="h-10 w-auto transition-all duration-300 group-hover:opacity-80"
+            className="h-10 w-auto transition duration-500 group-hover:opacity-80"
             style={
               isFloating
                 ? {
                     filter:
-                      "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.6))",
+                      "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.55))",
                   }
                 : undefined
             }
@@ -68,7 +58,7 @@ export function Navbar() {
             <a
               key={item.href}
               href={item.href}
-              className={`relative text-[12px] font-medium uppercase tracking-widest transition-all duration-300 after:absolute after:left-1/2 after:-bottom-2 after:h-px after:w-0 after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full ${
+              className={`relative text-[12px] font-medium uppercase tracking-widest transition-all duration-300 after:absolute after:left-1/2 after:-bottom-2 after:h-px after:w-0 after:-translate-x-1/2 after:transition-all after:duration-500 hover:after:w-full ${
                 scrolled
                   ? "text-foreground/70 hover:text-foreground after:bg-foreground"
                   : "text-white/90 hover:text-white after:bg-white"
@@ -85,51 +75,68 @@ export function Navbar() {
             href="#contatti"
             className={`group inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-[11px] font-medium uppercase tracking-widest transition-all duration-300 ${
               scrolled
-                ? "border border-foreground/15 text-foreground hover:border-foreground/40 hover:text-primary"
+                ? "border border-foreground/15 text-foreground hover:border-foreground/40"
                 : "border border-white/25 text-white hover:border-white/60"
             }`}
           >
             <span>Prenota un incontro</span>
-
-            <span
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            >
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
               →
             </span>
           </a>
         </div>
 
-        {/* Mobile button */}
+        {/* ===================== */}
+        {/* MOBILE HAMBURGER PRO */}
+        {/* ===================== */}
         <button
           onClick={() => setOpen(!open)}
-          className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-white/20"
+          aria-label="Menu"
+          className={`lg:hidden relative flex h-11 w-11 items-center justify-center rounded-full backdrop-blur-md transition-all duration-500 ${
+            isFloating
+              ? "bg-black/20 ring-1 ring-white/20 hover:ring-white/40"
+              : "bg-transparent ring-1 ring-foreground/15 hover:ring-foreground/30"
+          }`}
         >
           <span className="relative flex h-4 w-5 flex-col justify-center">
+            {/* top */}
             <span
-              className={`absolute h-px w-5 bg-current transition ${
-                open ? "rotate-45" : "-translate-y-[6px]"
+              className={`absolute h-px w-5 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
+                scrolled ? "bg-foreground" : "bg-white"
+              } ${
+                open ? "rotate-45 translate-y-0" : "-translate-y-[6px]"
               }`}
             />
+
+            {/* middle */}
             <span
-              className={`absolute h-px w-5 bg-current transition ${
-                open ? "opacity-0" : "opacity-100"
+              className={`absolute h-px w-5 transition-all duration-300 ease-out ${
+                scrolled ? "bg-foreground" : "bg-white"
+              } ${
+                open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
               }`}
             />
+
+            {/* bottom */}
             <span
-              className={`absolute h-px w-5 bg-current transition ${
-                open ? "-rotate-45" : "translate-y-[6px]"
+              className={`absolute h-px w-5 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
+                scrolled ? "bg-foreground" : "bg-white"
+              } ${
+                open ? "-rotate-45 translate-y-0" : "translate-y-[6px]"
               }`}
             />
           </span>
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* MOBILE MENU */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-500 ${
           open ? "max-h-96" : "max-h-0"
         } ${
-          scrolled ? "bg-background/95 backdrop-blur-xl" : "bg-black/70"
+          scrolled
+            ? "bg-background/95 backdrop-blur-xl"
+            : "bg-black/70 backdrop-blur-xl"
         }`}
       >
         <nav className="flex flex-col gap-4 px-6 py-6">

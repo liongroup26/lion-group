@@ -13,21 +13,22 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-
-  const isFloating = !scrolled;
+  const indicatorRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
   // ============================================
-  // 1. SCROLL DETECTION (ottimizzato con rAF)
+  // SCROLL DETECTION
   // ============================================
   useEffect(() => {
     let ticking = false;
     const onScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setScrolled(window.scrollY > 24);
+          setScrolled(window.scrollY > 60);
           ticking = false;
         });
         ticking = true;
@@ -39,7 +40,7 @@ export function Navbar() {
   }, []);
 
   // ============================================
-  // 2. ACTIVE SECTION TRACKING (IntersectionObserver)
+  // ACTIVE SECTION TRACKING
   // ============================================
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
@@ -60,7 +61,6 @@ export function Navbar() {
             }
           });
 
-          // Trova la sezione più visibile
           let maxRatio = 0;
           let maxId = "";
           visibleSections.forEach((ratio, sectionId) => {
@@ -72,7 +72,7 @@ export function Navbar() {
           if (maxId) setActiveSection(maxId);
         },
         {
-          rootMargin: "-20% 0px -60% 0px",
+          rootMargin: "-30% 0px -50% 0px",
           threshold: [0, 0.25, 0.5, 0.75, 1],
         }
       );
@@ -85,7 +85,36 @@ export function Navbar() {
   }, []);
 
   // ============================================
-  // 3. ESCAPE KEY & FOCUS TRAP
+  // ACTIVE INDICATOR POSITION (si muove fluidamente)
+  // ============================================
+  useEffect(() => {
+    if (!navRef.current || !indicatorRef.current) return;
+
+    const activeIndex = NAV.findIndex(
+      (item) => item.href.replace("#", "") === activeSection
+    );
+    const hoverIndex = hoveredIndex;
+    const targetIndex = hoverIndex !== null ? hoverIndex : activeIndex;
+
+    if (targetIndex === -1) {
+      indicatorRef.current.style.opacity = "0";
+      return;
+    }
+
+    const links = navRef.current.querySelectorAll<HTMLAnchorElement>("a[data-nav-link]");
+    const targetLink = links[targetIndex];
+    if (!targetLink) return;
+
+    const navRect = navRef.current.getBoundingClientRect();
+    const linkRect = targetLink.getBoundingClientRect();
+
+    indicatorRef.current.style.opacity = "1";
+    indicatorRef.current.style.width = `${linkRect.width}px`;
+    indicatorRef.current.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
+  }, [activeSection, hoveredIndex]);
+
+  // ============================================
+  // KEYBOARD & FOCUS
   // ============================================
   useEffect(() => {
     if (!open) return;
@@ -95,36 +124,14 @@ export function Navbar() {
         setOpen(false);
         menuButtonRef.current?.focus();
       }
-
-      // Focus trap semplice
-      if (e.key === "Tab" && menuRef.current) {
-        const focusable = menuRef.current.querySelectorAll<HTMLElement>(
-          'a, button, [tabindex]:not([tabindex="-1"])'
-        );
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last?.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first?.focus();
-        }
-      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
-    // Focus iniziale sul primo elemento del menu
-    const firstLink = menuRef.current?.querySelector<HTMLElement>("a");
-    firstLink?.focus();
-
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [open]);
 
   // ============================================
-  // 4. SCROLL LOCK quando il menu è aperto
+  // SCROLL LOCK
   // ============================================
   useEffect(() => {
     if (open) {
@@ -144,7 +151,7 @@ export function Navbar() {
   }, [open]);
 
   // ============================================
-  // 5. SMOOTH SCROLL HANDLER
+  // SMOOTH SCROLL
   // ============================================
   const handleNavClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -152,7 +159,7 @@ export function Navbar() {
       const id = href.replace("#", "");
       const element = document.getElementById(id);
       if (element) {
-        const offset = 100;
+        const offset = 80;
         const top = element.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: "smooth" });
         setOpen(false);
@@ -161,30 +168,57 @@ export function Navbar() {
     []
   );
 
+  const isLight = !scrolled; // Hero scuro = testo bianco
+
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 flex justify-center pointer-events-none">
-        {/* FLOATING CAPSULE */}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          scrolled ? "py-4" : "py-6"
+        }`}
+      >
+        {/* Sfondo che appare allo scroll */}
         <div
-          className={`pointer-events-auto mt-4 w-full max-w-[1400px] mx-6 lg:mx-12 rounded-full transition-all duration-500 ease-out
-          ${
+          className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             scrolled
-              ? "bg-background/70 backdrop-blur-xl border border-border/40 shadow-[0_20px_60px_rgba(0,0,0,0.12)]"
-              : "bg-white/5 backdrop-blur-md border border-white/10"
+              ? "bg-white/80 backdrop-blur-2xl border-b border-black/5"
+              : "bg-transparent"
           }`}
-        >
-          <div className="flex items-center justify-between px-6 lg:px-10 py-3">
+          aria-hidden="true"
+        />
+
+        {/* Linea dorata sottile in basso (solo quando scrollato) */}
+        {scrolled && (
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/30 to-transparent"
+            aria-hidden="true"
+          />
+        )}
+
+        <div className="relative mx-auto max-w-[1600px] px-8 lg:px-16">
+          <div className="flex items-center justify-between">
             {/* LOGO */}
-            <Link to="/" className="flex items-center group">
+            <Link
+              to="/"
+              onClick={(e) => {
+                if (window.location.pathname === "/") {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+              className="group relative flex items-center"
+            >
               <img
                 src={logo}
                 alt="Lion Group"
-                className="h-9 w-auto transition-all duration-500 group-hover:opacity-80"
+                className={`w-auto transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  scrolled ? "h-8" : "h-10"
+                }`}
                 style={
-                  isFloating
+                  isLight
                     ? {
                         filter:
-                          "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.5))",
+                          "brightness(0) invert(1) drop-shadow(0 2px 20px rgba(0,0,0,0.4))",
                       }
                     : undefined
                 }
@@ -192,26 +226,39 @@ export function Navbar() {
             </Link>
 
             {/* DESKTOP NAV */}
-            <nav className="hidden lg:flex items-center gap-2">
-              {NAV.map((item) => {
+            <nav
+              ref={navRef}
+              className="hidden lg:flex items-center relative"
+            >
+              {/* Indicatore attivo/hover (si muove fluidamente) */}
+              <div
+                ref={indicatorRef}
+                className={`absolute -bottom-1 h-px transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  isLight ? "bg-white" : "bg-black"
+                }`}
+                style={{ opacity: 0 }}
+                aria-hidden="true"
+              />
+
+              {NAV.map((item, index) => {
                 const id = item.href.replace("#", "");
                 const isActive = activeSection === id;
                 return (
                   <a
                     key={item.href}
                     href={item.href}
+                    data-nav-link
                     onClick={(e) => handleNavClick(e, item.href)}
-                    className={`relative px-5 py-2 rounded-full text-[12px] font-medium uppercase tracking-[0.18em]
-                    transition-all duration-300 border
-                    hover:scale-[1.03]
-                    ${
-                      isActive
-                        ? scrolled
-                          ? "text-foreground bg-foreground/5 border-foreground/10"
-                          : "text-white bg-white/15 border-white/20"
-                        : scrolled
-                        ? "text-foreground/70 border-transparent hover:text-foreground hover:bg-foreground/5 hover:border-foreground/10"
-                        : "text-white/90 border-white/10 hover:text-white hover:bg-white/10 hover:border-white/20"
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-colors duration-500 ${
+                      isLight
+                        ? isActive
+                          ? "text-white"
+                          : "text-white/70 hover:text-white"
+                        : isActive
+                        ? "text-black"
+                        : "text-black/50 hover:text-black"
                     }`}
                   >
                     {item.label}
@@ -221,17 +268,20 @@ export function Navbar() {
             </nav>
 
             {/* CTA DESKTOP */}
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:block">
               <a
                 href="#contatti"
                 onClick={(e) => handleNavClick(e, "#contatti")}
-                className="group flex items-center gap-2 px-6 py-2.5 rounded-full
-                bg-white text-black text-[11px] font-medium uppercase tracking-[0.18em]
-                hover:scale-[1.03] hover:shadow-[0_8px_30px_rgba(255,255,255,0.2)]
-                transition-all duration-300"
+                className={`group relative inline-flex items-center gap-3 overflow-hidden border px-7 py-3 text-[10px] font-medium uppercase tracking-[0.3em] transition-all duration-500 ${
+                  isLight
+                    ? "border-white/40 text-white hover:border-white hover:bg-white hover:text-black"
+                    : "border-black/20 text-black hover:border-black hover:bg-black hover:text-white"
+                }`}
               >
-                Prenota un incontro
-                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                <span className="relative z-10">Prenota un incontro</span>
+                <span
+                  className={`relative z-10 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1`}
+                >
                   →
                 </span>
               </a>
@@ -242,89 +292,115 @@ export function Navbar() {
               ref={menuButtonRef}
               onClick={() => setOpen(!open)}
               aria-expanded={open}
-              aria-label={open ? "Chiudi menu di navigazione" : "Apri menu di navigazione"}
-              aria-controls="mobile-menu"
-              className="lg:hidden flex h-11 w-11 items-center justify-center rounded-full
-              ring-1 ring-white/20 backdrop-blur-md transition-all duration-300
-              hover:ring-white/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              aria-label={open ? "Chiudi menu" : "Apri menu"}
+              className="lg:hidden relative flex h-12 w-12 items-center justify-center"
             >
-              <span className="relative flex h-4 w-5 flex-col justify-center">
+              <span className="relative flex h-4 w-6 flex-col justify-between">
                 <span
-                  className={`absolute h-px w-5 transition-all duration-500 ease-out ${
-                    open ? "rotate-45" : "-translate-y-[6px]"
-                  } ${scrolled ? "bg-foreground" : "bg-white"}`}
+                  className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open ? "translate-y-[7px] rotate-45" : ""
+                  } ${isLight ? "bg-white" : "bg-black"}`}
                 />
                 <span
-                  className={`absolute h-px w-5 transition-all duration-300 ease-out ${
-                    open ? "opacity-0 scale-x-0" : "opacity-100"
-                  } ${scrolled ? "bg-foreground" : "bg-white"}`}
-                />
-                <span
-                  className={`absolute h-px w-5 transition-all duration-500 ease-out ${
-                    open ? "-rotate-45" : "translate-y-[6px]"
-                  } ${scrolled ? "bg-foreground" : "bg-white"}`}
+                  className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open ? "-translate-y-[7px] -rotate-45" : ""
+                  } ${isLight ? "bg-white" : "bg-black"}`}
                 />
               </span>
             </button>
           </div>
-
-          {/* MOBILE MENU */}
-          <div
-            id="mobile-menu"
-            ref={menuRef}
-            role="navigation"
-            aria-label="Menu di navigazione mobile"
-            className={`lg:hidden grid transition-all duration-500 ease-out rounded-b-full overflow-hidden
-            ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
-          >
-            <div className="overflow-hidden">
-              <nav
-                className={`flex flex-col gap-3 px-6 py-6 backdrop-blur-xl
-                ${scrolled ? "bg-background/90" : "bg-black/60"}`}
-              >
-                {NAV.map((item) => {
-                  const id = item.href.replace("#", "");
-                  const isActive = activeSection === id;
-                  return (
-                    <a
-                      key={item.href}
-                      href={item.href}
-                      onClick={(e) => handleNavClick(e, item.href)}
-                      className={`px-5 py-3.5 rounded-full border text-sm uppercase tracking-[0.18em]
-                      transition-all duration-300
-                      ${
-                        isActive
-                          ? "bg-white/15 border-white/25 text-white"
-                          : "border-white/10 text-white/90 hover:bg-white/10 hover:border-white/20"
-                      }`}
-                    >
-                      {item.label}
-                    </a>
-                  );
-                })}
-
-                <a
-                  href="#contatti"
-                  onClick={(e) => handleNavClick(e, "#contatti")}
-                  className="mt-2 rounded-full bg-white px-5 py-3.5 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-black
-                  hover:scale-[1.02] transition-transform duration-300"
-                >
-                  Prenota un incontro →
-                </a>
-              </nav>
-            </div>
-          </div>
         </div>
       </header>
 
-      {/* OVERLAY per chiusura click-outside (solo mobile) */}
-      {open && (
+      {/* ============================================ */}
+      {/* MOBILE MENU FULL-SCREEN */}
+      {/* ============================================ */}
+      <div
+        className={`fixed inset-0 z-40 lg:hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          open ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden animate-in fade-in duration-300"
+          className={`absolute inset-0 bg-black transition-opacity duration-700 ${
+            open ? "opacity-100" : "opacity-0"
+          }`}
           onClick={() => setOpen(false)}
           aria-hidden="true"
         />
-      )}
+
+        {/* Contenuto */}
+        <div
+          ref={menuRef}
+          role="navigation"
+          aria-label="Menu di navigazione"
+          className="relative flex h-full flex-col justify-between px-8 py-32"
+        >
+          {/* Links */}
+          <nav className="flex flex-col">
+            {NAV.map((item, index) => {
+              const id = item.href.replace("#", "");
+              const isActive = activeSection === id;
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  className={`group relative overflow-hidden py-4 border-b border-white/10 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    open
+                      ? "translate-y-0 opacity-100"
+                      : "-translate-y-8 opacity-0"
+                  }`}
+                  style={{
+                    transitionDelay: open ? `${150 + index * 80}ms` : "0ms",
+                  }}
+                >
+                  <span
+                    className={`block text-4xl font-light tracking-[0.15em] uppercase transition-colors duration-500 ${
+                      isActive ? "text-white" : "text-white/50 group-hover:text-white"
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+
+                  {/* Hover line */}
+                  <span className="absolute bottom-0 left-0 h-px w-0 bg-white transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-full" />
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Footer CTA */}
+          <div
+            className={`transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              open
+                ? "translate-y-0 opacity-100"
+                : "translate-y-8 opacity-0"
+            }`}
+            style={{ transitionDelay: open ? `${150 + NAV.length * 80 + 100}ms` : "0ms" }}
+          >
+            <a
+              href="#contatti"
+              onClick={(e) => handleNavClick(e, "#contatti")}
+              className="group flex items-center justify-between border-t border-white/20 pt-8"
+            >
+              <span className="text-[10px] uppercase tracking-[0.3em] text-white/60">
+                Contattaci
+              </span>
+              <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/30 transition-all duration-500 group-hover:bg-white group-hover:text-black group-hover:border-white">
+                <span className="transition-transform duration-500 group-hover:rotate-45">
+                  →
+                </span>
+              </span>
+            </a>
+
+            <div className="mt-8 flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-white/40">
+              <span>© 2026 Lion Group</span>
+              <span>Milano · Londra</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

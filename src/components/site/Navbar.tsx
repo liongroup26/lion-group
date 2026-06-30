@@ -20,6 +20,8 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // When over the hero video (not scrolled), we render NO full-width bar at all.
+  // Only floating elements with their own local "halo" — this removes any seam line.
   const isFloating = !scrolled;
 
   return (
@@ -36,7 +38,10 @@ export function Navbar() {
           className="flex items-center gap-3 group relative"
           style={
             isFloating
-              ? { filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.55))" }
+              ? {
+                  // Local soft halo behind the logo only — no full-width band
+                  filter: "drop-shadow(0 2px 14px rgba(0,0,0,0.55))",
+                }
               : undefined
           }
         >
@@ -58,7 +63,7 @@ export function Navbar() {
 
         <nav className="hidden lg:flex items-center gap-10">
           {NAV.map((item) => (
-            
+            <a
               key={item.href}
               href={item.href}
               className={`relative text-[12px] font-medium uppercase tracking-luxury transition-colors after:absolute after:left-0 after:-bottom-2 after:h-px after:w-0 after:transition-all hover:after:w-full ${
@@ -90,7 +95,7 @@ export function Navbar() {
           >
             IT
           </span>
-          
+          <a
             href="#contatti"
             className={`group inline-flex items-center gap-3 px-5 py-2.5 text-[11px] font-medium uppercase tracking-luxury transition-all duration-300 ${
               scrolled
@@ -137,37 +142,37 @@ export function Navbar() {
           </a>
         </div>
 
-        {/* Mobile hamburger — upgraded version */}
+        {/* Mobile hamburger — floating button with its own pill background, no full-width bar */}
         <button
           aria-label="Apri menu"
           onClick={() => setOpen(!open)}
-          className={`lg:hidden relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 active:scale-90 ${
+          className={`lg:hidden relative flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
             isFloating
-              ? "bg-black/25 backdrop-blur-md ring-1 ring-white/20 hover:ring-white/40 hover:bg-black/35"
-              : "bg-transparent ring-1 ring-foreground/15 hover:ring-foreground/30 hover:bg-foreground/5"
+              ? "bg-black/25 backdrop-blur-md ring-1 ring-white/15"
+              : "bg-transparent"
           }`}
         >
-          <span className="relative flex h-4 w-5 flex-col items-center justify-center">
+          <span className="flex flex-col gap-1.5">
             <span
-              className={`absolute block h-px w-5 rounded-full transition-all duration-300 ease-out ${
+              className={`block h-px w-5 transition-transform ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "rotate-45" : "-translate-y-[6px]"}`}
+              } ${open ? "translate-y-[7px] rotate-45" : ""}`}
             />
             <span
-              className={`absolute block h-px w-5 rounded-full transition-all duration-200 ease-out ${
+              className={`block h-px w-5 transition-opacity ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"}`}
+              } ${open ? "opacity-0" : ""}`}
             />
             <span
-              className={`absolute block h-px w-5 rounded-full transition-all duration-300 ease-out ${
+              className={`block h-px w-5 transition-transform ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "-rotate-45" : "translate-y-[6px]"}`}
+              } ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
             />
           </span>
         </button>
       </div>
 
-      {/* Mobile menu panel */}
+      {/* Mobile menu panel — only renders when open, so no seam exists when closed */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-500 ${
           open ? "max-h-96" : "max-h-0"
@@ -179,7 +184,7 @@ export function Navbar() {
       >
         <nav className="flex flex-col px-6 py-6 gap-4">
           {NAV.map((item) => (
-            
+            <a
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
@@ -192,7 +197,7 @@ export function Navbar() {
               {item.label}
             </a>
           ))}
-          
+          <a
             href="#contatti"
             onClick={() => setOpen(false)}
             className={`mt-2 rounded-full px-5 py-3 text-center text-[11px] font-medium uppercase tracking-luxury ${

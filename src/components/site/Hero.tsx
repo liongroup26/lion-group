@@ -1,4 +1,4 @@
-import heroYacht from "@/assets/hero-yacht.jpg";
+import heroYacht from "@/assets/hero-yacht-4k.jpg";
 
 export function Hero() {
   return (
@@ -44,6 +44,26 @@ export function Hero() {
         }}
       />
 
+
+      {/* Bottom vignette: darkens the area under CTAs so they pop */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[55vh]"
+        style={{
+          background:
+            "radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 45%, transparent 85%)",
+        }}
+      />
+
+      {/* Subtle gold glow behind CTAs */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-28 left-1/2 z-[2] h-32 w-[28rem] -translate-x-1/2 opacity-30 blur-3xl"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(200,170,95,0.35), transparent 70%)",
+        }}
+      />
 
       {/* CTAs anchored toward the bottom */}
       <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-32 sm:pb-36">

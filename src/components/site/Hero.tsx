@@ -54,57 +54,34 @@ export function Hero() {
         }}
       />
 
-      {/* Gold glow dietro CTAs */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-28 left-1/2 z-[2] h-32 w-[28rem] -translate-x-1/2 opacity-30 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(ellipse at center, rgba(200,170,95,0.35), transparent 70%)",
-        }}
-      />
-
       {/* ============================================ */}
-      {/* CONTENUTO CENTRALE - Headline + Sottotitolo */}
+      {/* SOTTOTITOLO - Piccolo, elegante, in basso */}
       {/* ============================================ */}
-      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-6 lg:px-12 text-center">
-        {/* Headline */}
-        <h1
-          className="animate-fade-up-blur text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-[0.15em] mb-6"
-          style={{ animationDelay: "0.3s" }}
-        >
-          LION GROUP
-        </h1>
-
-        {/* Linea dorata decorativa */}
+      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-40 sm:pb-48">
         <div
-          className="animate-fade-up-blur w-16 h-px bg-amber-600/60 mb-8"
-          style={{ animationDelay: "0.5s" }}
-        />
-
-        {/* Sottotitolo */}
-        <p
-          className="animate-fade-up-blur text-base md:text-lg text-white/80 font-light tracking-[0.12em] max-w-2xl leading-relaxed"
-          style={{ animationDelay: "0.7s" }}
+          className="animate-fade-up-blur text-center max-w-2xl"
+          style={{ animationDelay: "0.4s" }}
         >
-          Eccellenza e innovazione nei settori automotive, real estate e investimenti.
-          <br className="hidden md:block" />
-          Un approccio visionario al valore.
-        </p>
+          <p className="text-sm md:text-base text-white/80 font-light tracking-[0.15em] leading-relaxed">
+            Eccellenza e innovazione nei settori automotive, real estate e investimenti.
+            <br className="hidden md:block" />
+            Un approccio visionario al valore.
+          </p>
+        </div>
       </div>
 
       {/* ============================================ */}
-      {/* CTAs - Stile coerente con la navbar */}
+      {/* CTAs - Coerenti con la navbar */}
       {/* ============================================ */}
-      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-32 sm:pb-36">
+      <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-end px-6 lg:px-12 pb-24 sm:pb-28">
         <div
-          className="animate-fade-up-blur flex flex-wrap items-center justify-center gap-4"
-          style={{ animationDelay: "1s" }}
+          className="animate-fade-up-blur flex flex-wrap items-center justify-center gap-6"
+          style={{ animationDelay: "0.7s" }}
         >
-          {/* Primary CTA - stile navbar (squadrato) */}
+          {/* Primary CTA */}
           <a
             href="#divisioni"
-            className="group inline-flex items-center gap-3 border border-white/50 bg-white/10 backdrop-blur-sm px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-white transition-all duration-500 hover:bg-white hover:text-black hover:border-white"
+            className="group inline-flex items-center gap-3 border border-white/50 px-8 py-3.5 text-[11px] font-medium uppercase tracking-[0.28em] text-white transition-all duration-500 hover:bg-white hover:text-black hover:border-white"
           >
             Esplora le Divisioni
             <span className="transition-transform duration-500 group-hover:translate-x-1">→</span>
@@ -124,7 +101,7 @@ export function Hero() {
       <div
         aria-hidden
         className="animate-fade-up-blur absolute bottom-6 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-3"
-        style={{ animationDelay: "1.3s" }}
+        style={{ animationDelay: "1s" }}
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-white/70">
           Scopri

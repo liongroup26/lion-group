@@ -196,27 +196,35 @@ export function Navbar() {
               </a>
             </div>
 
-            {/* MOBILE HAMBURGER */}
-            <button
-              ref={menuButtonRef}
-              onClick={() => setOpen(!open)}
-              aria-expanded={open}
-              aria-label={open ? "Chiudi menu" : "Apri menu"}
-              className="lg:hidden relative flex h-10 w-10 items-center justify-center"
-            >
-              <span className="relative flex h-4 w-5 flex-col justify-between">
-                <span
-                  className={`block h-px w-full origin-center transition-all duration-300 ${
-                    open ? "translate-y-[7px] rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
-                />
-                <span
-                  className={`block h-px w-full origin-center transition-all duration-300 ${
-                    open ? "-translate-y-[7px] -rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
-                />
-              </span>
-            </button>
+{/* MOBILE HAMBURGER */}
+<button
+  ref={menuButtonRef}
+  onClick={() => setOpen(!open)}
+  aria-expanded={open}
+  aria-label={open ? "Chiudi menu" : "Apri menu"}
+  className="lg:hidden relative flex h-10 w-10 items-center justify-center"
+>
+  <span className="relative flex h-5 w-6 flex-col justify-between">
+    {/* Top line */}
+    <span
+      className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        open ? "translate-y-[9px] rotate-45" : ""
+      } ${isLight ? "bg-white" : "bg-black"}`}
+    />
+    {/* Middle line */}
+    <span
+      className={`block h-px w-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
+      } ${isLight ? "bg-white" : "bg-black"}`}
+    />
+    {/* Bottom line */}
+    <span
+      className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        open ? "-translate-y-[9px] -rotate-45" : ""
+      } ${isLight ? "bg-white" : "bg-black"}`}
+    />
+  </span>
+</button>
           </div>
         </div>
       </header>

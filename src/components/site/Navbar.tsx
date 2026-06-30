@@ -14,11 +14,19 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+
+  // ============================================
+  // MOUNT ANIMATION
+  // ============================================
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // ============================================
   // SCROLL DETECTION
@@ -85,7 +93,7 @@ export function Navbar() {
   }, []);
 
   // ============================================
-  // ACTIVE INDICATOR POSITION (si muove fluidamente)
+  // ACTIVE INDICATOR POSITION
   // ============================================
   useEffect(() => {
     if (!navRef.current || !indicatorRef.current) return;
@@ -168,7 +176,7 @@ export function Navbar() {
     []
   );
 
-  const isLight = !scrolled; // Hero scuro = testo bianco
+  const isLight = !scrolled;
 
   return (
     <>
@@ -177,23 +185,23 @@ export function Navbar() {
           scrolled ? "py-4" : "py-6"
         }`}
       >
-        {/* Sfondo che appare allo scroll */}
+        {/* Sfondo che appare allo scroll - NERO per mantenere il mood luxury */}
         <div
           className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             scrolled
-              ? "bg-white/80 backdrop-blur-2xl border-b border-black/5"
+              ? "bg-black/90 backdrop-blur-2xl"
               : "bg-transparent"
           }`}
           aria-hidden="true"
         />
 
-        {/* Linea dorata sottile in basso (solo quando scrollato) */}
-        {scrolled && (
-          <div
-            className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/30 to-transparent"
-            aria-hidden="true"
-          />
-        )}
+        {/* Linea dorata sottile in basso */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent transition-opacity duration-700 ${
+            scrolled ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden="true"
+        />
 
         <div className="relative mx-auto max-w-[1600px] px-8 lg:px-16">
           <div className="flex items-center justify-between">
@@ -206,7 +214,10 @@ export function Navbar() {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
-              className="group relative flex items-center"
+              className={`group relative flex items-center transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
+              }`}
+              style={{ transitionDelay: "200ms" }}
             >
               <img
                 src={logo}
@@ -230,12 +241,10 @@ export function Navbar() {
               ref={navRef}
               className="hidden lg:flex items-center relative"
             >
-              {/* Indicatore attivo/hover (si muove fluidamente) */}
+              {/* Indicatore attivo/hover - linea dorata */}
               <div
                 ref={indicatorRef}
-                className={`absolute -bottom-1 h-px transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  isLight ? "bg-white" : "bg-black"
-                }`}
+                className="absolute -bottom-2 h-px bg-amber-600 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 style={{ opacity: 0 }}
                 aria-hidden="true"
               />
@@ -251,15 +260,18 @@ export function Navbar() {
                     onClick={(e) => handleNavClick(e, item.href)}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
-                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-colors duration-500 ${
+                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                    } ${
                       isLight
                         ? isActive
                           ? "text-white"
                           : "text-white/70 hover:text-white"
                         : isActive
-                        ? "text-black"
-                        : "text-black/50 hover:text-black"
+                        ? "text-white"
+                        : "text-white/50 hover:text-white"
                     }`}
+                    style={{ transitionDelay: mounted ? `${300 + index * 100}ms` : "0ms" }}
                   >
                     {item.label}
                   </a>
@@ -272,11 +284,14 @@ export function Navbar() {
               <a
                 href="#contatti"
                 onClick={(e) => handleNavClick(e, "#contatti")}
-                className={`group relative inline-flex items-center gap-3 overflow-hidden border px-7 py-3 text-[10px] font-medium uppercase tracking-[0.3em] transition-all duration-500 ${
+                className={`group relative inline-flex items-center gap-3 overflow-hidden border px-7 py-3 text-[10px] font-medium uppercase tracking-[0.3em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  mounted ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"
+                } ${
                   isLight
                     ? "border-white/40 text-white hover:border-white hover:bg-white hover:text-black"
-                    : "border-black/20 text-black hover:border-black hover:bg-black hover:text-white"
+                    : "border-white/30 text-white hover:border-white hover:bg-white hover:text-black"
                 }`}
+                style={{ transitionDelay: mounted ? `${300 + NAV.length * 100 + 100}ms` : "0ms" }}
               >
                 <span className="relative z-10">Prenota un incontro</span>
                 <span
@@ -293,18 +308,21 @@ export function Navbar() {
               onClick={() => setOpen(!open)}
               aria-expanded={open}
               aria-label={open ? "Chiudi menu" : "Apri menu"}
-              className="lg:hidden relative flex h-12 w-12 items-center justify-center"
+              className={`lg:hidden relative flex h-12 w-12 items-center justify-center transition-all duration-700 ${
+                mounted ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ transitionDelay: mounted ? "600ms" : "0ms" }}
             >
               <span className="relative flex h-4 w-6 flex-col justify-between">
                 <span
                   className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "translate-y-[7px] rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
+                  } ${isLight ? "bg-white" : "bg-white"}`}
                 />
                 <span
                   className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "-translate-y-[7px] -rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
+                  } ${isLight ? "bg-white" : "bg-white"}`}
                 />
               </span>
             </button>
@@ -363,8 +381,8 @@ export function Navbar() {
                     {item.label}
                   </span>
 
-                  {/* Hover line */}
-                  <span className="absolute bottom-0 left-0 h-px w-0 bg-white transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-full" />
+                  {/* Hover line dorata */}
+                  <span className="absolute bottom-0 left-0 h-px w-0 bg-amber-600 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-full" />
                 </a>
               );
             })}

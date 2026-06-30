@@ -66,24 +66,24 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
-          {NAV.map((item) => (
-            
-              key={item.href}
-              href={item.href}
-              className={`relative text-[12px] font-medium uppercase tracking-luxury transition-colors after:absolute after:left-1/2 after:-bottom-2 after:h-px after:w-0 after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full ${
-                scrolled
-                  ? "text-foreground/70 hover:text-foreground after:bg-foreground"
-                  : "text-white/95 hover:text-white after:bg-white"
-              }`}
-              style={
-                isFloating
-                  ? { textShadow: "0 1px 12px rgba(0,0,0,0.65)" }
-                  : undefined
-              }
-            >
-              {item.label}
-            </a>
-          ))}
+       {NAV.map((item) => (
+  <a
+    key={item.href}
+    href={item.href}
+    className={`relative text-[12px] font-medium uppercase tracking-luxury transition-colors after:absolute after:left-1/2 after:-bottom-2 after:h-px after:w-0 after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full ${
+      scrolled
+        ? "text-foreground/70 hover:text-foreground after:bg-foreground"
+        : "text-white/95 hover:text-white after:bg-white"
+    }`}
+    style={
+      isFloating
+        ? { textShadow: "0 1px 12px rgba(0,0,0,0.65)" }
+        : undefined
+    }
+  >
+    {item.label}
+  </a>
+))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-6">

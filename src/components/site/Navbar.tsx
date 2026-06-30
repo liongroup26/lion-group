@@ -14,17 +14,9 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>("");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-
-  // ============================================
-  // MOUNT ANIMATION
-  // ============================================
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // ============================================
   // SCROLL DETECTION
@@ -145,7 +137,7 @@ export function Navbar() {
     []
   );
 
-  const isLight = !scrolled; // Hero scuro = testo bianco
+  const isLight = !scrolled;
 
   return (
     <>
@@ -173,10 +165,7 @@ export function Navbar() {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
-              className={`group relative flex items-center transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-              }`}
-              style={{ transitionDelay: "200ms" }}
+              className="group relative flex items-center"
             >
               <img
                 src={logo}
@@ -196,7 +185,7 @@ export function Navbar() {
             </Link>
 
             {/* DESKTOP NAV */}
-            <nav className="hidden lg:flex items-center gap-2">
+            <nav className="hidden lg:flex items-center gap-4">
               {NAV.map((item, index) => {
                 const id = item.href.replace("#", "");
                 const isActive = activeSection === id;
@@ -207,18 +196,15 @@ export function Navbar() {
                     onClick={(e) => handleNavClick(e, item.href)}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
-                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-colors duration-500 ${
-                      mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                    } ${
+                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.32em] transition-colors duration-300 ${
                       isLight
                         ? isActive
-                          ? "text-white"
-                          : "text-white/70 hover:text-white"
+                          ? "text-black"
+                          : "text-black/60 hover:text-black"
                         : isActive
-                        ? "text-black"
-                        : "text-black/60 hover:text-black"
+                        ? "text-white"
+                        : "text-white/70 hover:text-white"
                     }`}
-                    style={{ transitionDelay: mounted ? `${300 + index * 100}ms` : "0ms" }}
                   >
                     {item.label}
                     {/* Linea dorata corta e centrata */}
@@ -240,13 +226,10 @@ export function Navbar() {
                 href="#contatti"
                 onClick={(e) => handleNavClick(e, "#contatti")}
                 className={`group relative inline-flex items-center gap-3 overflow-hidden border px-7 py-3 text-[10px] font-medium uppercase tracking-[0.3em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  mounted ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"
-                } ${
                   isLight
-                    ? "border-white/40 text-white hover:border-white hover:bg-white hover:text-black"
-                    : "border-black/20 text-black hover:border-black hover:bg-black hover:text-white"
+                    ? "border-black/20 text-black hover:border-black hover:bg-black hover:text-white"
+                    : "border-white/40 text-white hover:border-white hover:bg-white hover:text-black"
                 }`}
-                style={{ transitionDelay: mounted ? `${300 + NAV.length * 100 + 100}ms` : "0ms" }}
               >
                 <span className="relative z-10">Prenota un incontro</span>
                 <span className="relative z-10 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1">
@@ -261,10 +244,7 @@ export function Navbar() {
               onClick={() => setOpen(!open)}
               aria-expanded={open}
               aria-label={open ? "Chiudi menu" : "Apri menu"}
-              className={`lg:hidden relative flex h-12 w-12 items-center justify-center transition-all duration-700 ${
-                mounted ? "opacity-100" : "opacity-0"
-              }`}
-              style={{ transitionDelay: mounted ? "600ms" : "0ms" }}
+              className="lg:hidden relative flex h-12 w-12 items-center justify-center"
             >
               <span className="relative flex h-4 w-6 flex-col justify-between">
                 <span

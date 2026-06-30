@@ -1,11 +1,7 @@
-import { defineConfig } from 'vite'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-
-export default defineConfig({
-  plugins: [
-    tanstackStart({
-      target: 'cloudflare-module', // <-- questo è il pezzo che probabilmente manca
-    }),
-    // ...altri plugin
-  ],
-})
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tanstack-start-app",
+  "compatibility_date": "2025-09-24",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "dist/server/server.js"
+}

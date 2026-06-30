@@ -201,29 +201,29 @@ export function Navbar() {
               <span className="relative flex h-5 w-6 flex-col justify-between">
                 <span
                   className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    open ? "translate-y-[9px] rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
+                    open ? "translate-y-[9px] rotate-45 bg-black" : ""
+                  } ${!open && isLight ? "bg-white" : !open ? "bg-black" : ""}`}
                 />
                 <span
                   className={`block h-px w-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"
-                  } ${isLight ? "bg-white" : "bg-black"}`}
+                  } ${!open && isLight ? "bg-white" : "bg-black"}`}
                 />
                 <span
                   className={`block h-px w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                    open ? "-translate-y-[9px] -rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-black"}`}
+                    open ? "-translate-y-[9px] -rotate-45 bg-black" : ""
+                  } ${!open && isLight ? "bg-white" : !open ? "bg-black" : ""}`}
                 />
               </span>
             </button>
           </div>
         </div>
 
-        {/* MOBILE MENU - DROPDOWN SEMPLICE */}
+        {/* MOBILE MENU - SEMPRE BIANCO */}
         <div
           className={`lg:hidden absolute top-full left-0 right-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] overflow-hidden ${
             open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          } ${scrolled ? "bg-white/95 backdrop-blur-md" : "bg-black/95 backdrop-blur-md"}`}
+          } bg-white/98 backdrop-blur-md shadow-lg`}
         >
           <nav className="flex flex-col px-6 py-6 gap-2">
             {NAV.map((item) => {
@@ -234,30 +234,25 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className={`px-4 py-3 text-[11px] font-medium uppercase tracking-[0.25em] transition-all duration-300 ${
+                  className={`relative px-4 py-3 text-[11px] font-medium uppercase tracking-[0.25em] transition-all duration-300 ${
                     isActive
-                      ? scrolled
-                        ? "text-black bg-black/5"
-                        : "text-white bg-white/10"
-                      : scrolled
-                      ? "text-black/70 hover:text-black hover:bg-black/5"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
+                      ? "text-black"
+                      : "text-black/70 hover:text-black"
                   }`}
                 >
                   {item.label}
+                  {isActive && (
+                    <span className="absolute bottom-2 left-4 w-8 h-px bg-amber-600" />
+                  )}
                 </a>
               );
             })}
             
-            <div className="pt-4 mt-4 border-t border-current border-opacity-20">
+            <div className="pt-4 mt-4 border-t border-black/10">
               <a
                 href="#contatti"
                 onClick={(e) => handleNavClick(e, "#contatti")}
-                className={`block px-4 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-center ${
-                  scrolled
-                    ? "bg-black text-white hover:bg-black/90"
-                    : "bg-white text-black hover:bg-white/90"
-                } transition-all duration-300`}
+                className="block px-4 py-3 text-[10px] font-medium uppercase tracking-[0.25em] text-center bg-black text-white hover:bg-black/90 transition-all duration-300"
               >
                 Prenota un incontro
               </a>

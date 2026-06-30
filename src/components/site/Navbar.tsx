@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "@tanstack/react-router";
-import logoDark from "@/assets/lion-logo.png";
-import logoLight from "@/assets/lion-logo-light.png"; // Crea una versione bianca del logo
+import logo from "@/assets/lion-logo.png";
 
 const NAV = [
   { label: "Divisioni", href: "#divisioni" },
@@ -73,7 +72,7 @@ export function Navbar() {
           if (maxId) setActiveSection(maxId);
         },
         {
-          rootMargin: "-20% 0px -60% 0px", // Trigger quando la sezione è nel 20-40% superiore
+          rootMargin: "-20% 0px -60% 0px",
           threshold: [0, 0.25, 0.5, 0.75, 1],
         }
       );
@@ -153,7 +152,7 @@ export function Navbar() {
       const id = href.replace("#", "");
       const element = document.getElementById(id);
       if (element) {
-        const offset = 100; // Offset per compensare la navbar
+        const offset = 100;
         const top = element.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: "smooth" });
         setOpen(false);
@@ -178,14 +177,14 @@ export function Navbar() {
             {/* LOGO */}
             <Link to="/" className="flex items-center group">
               <img
-                src={scrolled ? logoDark : logoLight}
+                src={logo}
                 alt="Lion Group"
                 className="h-9 w-auto transition-all duration-500 group-hover:opacity-80"
                 style={
-                  !scrolled
+                  isFloating
                     ? {
                         filter:
-                          "drop-shadow(0 2px 14px rgba(0,0,0,0.5))",
+                          "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.5))",
                       }
                     : undefined
                 }
@@ -269,7 +268,7 @@ export function Navbar() {
             </button>
           </div>
 
-          {/* MOBILE MENU (con animazione CSS Grid pixel-perfect) */}
+          {/* MOBILE MENU */}
           <div
             id="mobile-menu"
             ref={menuRef}

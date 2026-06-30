@@ -185,11 +185,11 @@ export function Navbar() {
           scrolled ? "py-4" : "py-6"
         }`}
       >
-        {/* Sfondo che appare allo scroll - NERO per mantenere il mood luxury */}
+        {/* Sfondo trasparente sempre - solo backdrop-blur leggero quando scrollato */}
         <div
           className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
             scrolled
-              ? "bg-black/90 backdrop-blur-2xl"
+              ? "backdrop-blur-md bg-white/5"
               : "bg-transparent"
           }`}
           aria-hidden="true"
@@ -268,8 +268,8 @@ export function Navbar() {
                           ? "text-white"
                           : "text-white/70 hover:text-white"
                         : isActive
-                        ? "text-white"
-                        : "text-white/50 hover:text-white"
+                        ? "text-black"
+                        : "text-black/50 hover:text-black"
                     }`}
                     style={{ transitionDelay: mounted ? `${300 + index * 100}ms` : "0ms" }}
                   >
@@ -289,7 +289,7 @@ export function Navbar() {
                 } ${
                   isLight
                     ? "border-white/40 text-white hover:border-white hover:bg-white hover:text-black"
-                    : "border-white/30 text-white hover:border-white hover:bg-white hover:text-black"
+                    : "border-black/20 text-black hover:border-black hover:bg-black hover:text-white"
                 }`}
                 style={{ transitionDelay: mounted ? `${300 + NAV.length * 100 + 100}ms` : "0ms" }}
               >
@@ -317,12 +317,12 @@ export function Navbar() {
                 <span
                   className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "translate-y-[7px] rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-white"}`}
+                  } ${isLight ? "bg-white" : "bg-black"}`}
                 />
                 <span
                   className={`block h-px w-full origin-center transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     open ? "-translate-y-[7px] -rotate-45" : ""
-                  } ${isLight ? "bg-white" : "bg-white"}`}
+                  } ${isLight ? "bg-white" : "bg-black"}`}
                 />
               </span>
             </button>

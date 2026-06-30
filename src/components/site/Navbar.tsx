@@ -32,7 +32,11 @@ export function Navbar() {
           : "bg-transparent text-white"
       }`}
     >
-      <div className="relative mx-auto flex max-w-[1400px] items-center justify-between px-6 lg:px-12 py-4">
+      <div
+        className={`relative mx-auto flex max-w-[1400px] items-center justify-between px-6 lg:px-12 transition-all duration-500 ${
+          isFloating ? "py-5" : "py-4"
+        }`}
+      >
         <Link
           to="/"
           className="flex items-center gap-3 group relative"
@@ -52,7 +56,7 @@ export function Navbar() {
             height={70}
             fetchPriority="high"
             decoding="async"
-            className="h-10 w-auto transition group-hover:opacity-80"
+            className="h-11 w-auto transition group-hover:opacity-80"
             style={
               isFloating
                 ? { filter: "brightness(0) invert(1) drop-shadow(0 2px 14px rgba(0,0,0,0.6))" }
@@ -63,10 +67,10 @@ export function Navbar() {
 
         <nav className="hidden lg:flex items-center gap-10">
           {NAV.map((item) => (
-            <a
+            
               key={item.href}
               href={item.href}
-              className={`relative text-[12px] font-medium uppercase tracking-luxury transition-colors after:absolute after:left-0 after:-bottom-2 after:h-px after:w-0 after:transition-all hover:after:w-full ${
+              className={`relative text-[12px] font-medium uppercase tracking-luxury transition-colors after:absolute after:left-1/2 after:-bottom-2 after:h-px after:w-0 after:-translate-x-1/2 after:transition-all after:duration-300 hover:after:w-full ${
                 scrolled
                   ? "text-foreground/70 hover:text-foreground after:bg-foreground"
                   : "text-white/95 hover:text-white after:bg-white"
@@ -84,23 +88,15 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-6">
           <span
-            className={`text-[11px] uppercase tracking-luxury ${
-              scrolled ? "text-muted-foreground" : "text-white/80"
-            }`}
-            style={
-              isFloating
-                ? { textShadow: "0 1px 10px rgba(0,0,0,0.6)" }
-                : undefined
-            }
-          >
-            IT
-          </span>
-          <a
+            aria-hidden
+            className={`h-4 w-px ${scrolled ? "bg-foreground/15" : "bg-white/20"}`}
+          />
+          
             href="#contatti"
-            className={`group inline-flex items-center gap-3 px-5 py-2.5 text-[11px] font-medium uppercase tracking-luxury transition-all duration-300 ${
+            className={`group inline-flex items-center gap-3 rounded-full px-5 py-2.5 text-[11px] font-medium uppercase tracking-luxury transition-all duration-300 ${
               scrolled
-                ? "text-foreground hover:text-primary"
-                : "text-white hover:text-white"
+                ? "border border-foreground/15 text-foreground hover:border-foreground/40 hover:text-primary"
+                : "border border-white/25 text-white hover:border-white/60"
             }`}
             style={
               isFloating
@@ -108,17 +104,10 @@ export function Navbar() {
                 : undefined
             }
           >
-            <span className="relative">
-              Prenota un incontro
-              <span
-                className={`pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100 ${
-                  scrolled ? "bg-foreground" : "bg-white"
-                }`}
-              />
-            </span>
+            <span className="relative">Prenota un incontro</span>
             <span
               aria-hidden
-              className={`flex h-7 w-7 items-center justify-center rounded-full border transition-all duration-300 group-hover:translate-x-0.5 ${
+              className={`flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-300 group-hover:translate-x-0.5 ${
                 scrolled
                   ? "border-foreground/30 group-hover:border-foreground group-hover:bg-foreground group-hover:text-background"
                   : "border-white/40 group-hover:border-white group-hover:bg-white group-hover:text-ink"
@@ -142,31 +131,31 @@ export function Navbar() {
           </a>
         </div>
 
-        {/* Mobile hamburger — floating button with its own pill background, no full-width bar */}
+        {/* Mobile hamburger — upgraded version */}
         <button
           aria-label="Apri menu"
           onClick={() => setOpen(!open)}
-          className={`lg:hidden relative flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
+          className={`lg:hidden relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 active:scale-90 ${
             isFloating
-              ? "bg-black/25 backdrop-blur-md ring-1 ring-white/15"
-              : "bg-transparent"
+              ? "bg-black/25 backdrop-blur-md ring-1 ring-white/20 hover:ring-white/40 hover:bg-black/35"
+              : "bg-transparent ring-1 ring-foreground/15 hover:ring-foreground/30 hover:bg-foreground/5"
           }`}
         >
-          <span className="flex flex-col gap-1.5">
+          <span className="relative flex h-4 w-5 flex-col items-center justify-center">
             <span
-              className={`block h-px w-5 transition-transform ${
+              className={`absolute block h-px w-5 rounded-full transition-all duration-300 ease-out ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "translate-y-[7px] rotate-45" : ""}`}
+              } ${open ? "rotate-45" : "-translate-y-[6px]"}`}
             />
             <span
-              className={`block h-px w-5 transition-opacity ${
+              className={`absolute block h-px w-5 rounded-full transition-all duration-200 ease-out ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "opacity-0" : ""}`}
+              } ${open ? "opacity-0 scale-x-0" : "opacity-100 scale-x-100"}`}
             />
             <span
-              className={`block h-px w-5 transition-transform ${
+              className={`absolute block h-px w-5 rounded-full transition-all duration-300 ease-out ${
                 scrolled ? "bg-foreground" : "bg-white"
-              } ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
+              } ${open ? "-rotate-45" : "translate-y-[6px]"}`}
             />
           </span>
         </button>
@@ -184,7 +173,7 @@ export function Navbar() {
       >
         <nav className="flex flex-col px-6 py-6 gap-4">
           {NAV.map((item) => (
-            <a
+            
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
@@ -197,7 +186,7 @@ export function Navbar() {
               {item.label}
             </a>
           ))}
-          <a
+          
             href="#contatti"
             onClick={() => setOpen(false)}
             className={`mt-2 rounded-full px-5 py-3 text-center text-[11px] font-medium uppercase tracking-luxury ${

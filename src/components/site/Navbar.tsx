@@ -18,8 +18,6 @@ export function Navbar() {
 
   const menuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const navRef = useRef<HTMLElement>(null);
 
   // ============================================
   // MOUNT ANIMATION
@@ -93,35 +91,6 @@ export function Navbar() {
   }, []);
 
   // ============================================
-  // ACTIVE INDICATOR POSITION
-  // ============================================
-  useEffect(() => {
-    if (!navRef.current || !indicatorRef.current) return;
-
-    const activeIndex = NAV.findIndex(
-      (item) => item.href.replace("#", "") === activeSection
-    );
-    const hoverIndex = hoveredIndex;
-    const targetIndex = hoverIndex !== null ? hoverIndex : activeIndex;
-
-    if (targetIndex === -1) {
-      indicatorRef.current.style.opacity = "0";
-      return;
-    }
-
-    const links = navRef.current.querySelectorAll<HTMLAnchorElement>("a[data-nav-link]");
-    const targetLink = links[targetIndex];
-    if (!targetLink) return;
-
-    const navRect = navRef.current.getBoundingClientRect();
-    const linkRect = targetLink.getBoundingClientRect();
-
-    indicatorRef.current.style.opacity = "1";
-    indicatorRef.current.style.width = `${linkRect.width}px`;
-    indicatorRef.current.style.transform = `translateX(${linkRect.left - navRect.left}px)`;
-  }, [activeSection, hoveredIndex]);
-
-  // ============================================
   // KEYBOARD & FOCUS
   // ============================================
   useEffect(() => {
@@ -176,32 +145,22 @@ export function Navbar() {
     []
   );
 
-  const isLight = !scrolled;
+  const isLight = !scrolled; // Hero scuro = testo bianco
 
   return (
     <>
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          scrolled ? "py-4" : "py-6"
+          scrolled ? "py-4 bg-white shadow-sm" : "py-6 bg-transparent"
         }`}
       >
-        {/* Sfondo trasparente sempre - solo backdrop-blur leggero quando scrollato */}
-        <div
-          className={`absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-            scrolled
-              ? "backdrop-blur-md bg-white/5"
-              : "bg-transparent"
-          }`}
-          aria-hidden="true"
-        />
-
-        {/* Linea dorata sottile in basso */}
-        <div
-          className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent transition-opacity duration-700 ${
-            scrolled ? "opacity-100" : "opacity-0"
-          }`}
-          aria-hidden="true"
-        />
+        {/* Linea dorata sottile in basso (solo quando scrollato) */}
+        {scrolled && (
+          <div
+            className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-600/40 to-transparent"
+            aria-hidden="true"
+          />
+        )}
 
         <div className="relative mx-auto max-w-[1600px] px-8 lg:px-16">
           <div className="flex items-center justify-between">
@@ -237,18 +196,7 @@ export function Navbar() {
             </Link>
 
             {/* DESKTOP NAV */}
-            <nav
-              ref={navRef}
-              className="hidden lg:flex items-center relative"
-            >
-              {/* Indicatore attivo/hover - linea dorata */}
-              <div
-                ref={indicatorRef}
-                className="absolute -bottom-2 h-px bg-amber-600 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                style={{ opacity: 0 }}
-                aria-hidden="true"
-              />
-
+            <nav className="hidden lg:flex items-center gap-2">
               {NAV.map((item, index) => {
                 const id = item.href.replace("#", "");
                 const isActive = activeSection === id;
@@ -256,11 +204,10 @@ export function Navbar() {
                   <a
                     key={item.href}
                     href={item.href}
-                    data-nav-link
                     onClick={(e) => handleNavClick(e, item.href)}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
-                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`relative px-6 py-2 text-[11px] font-medium uppercase tracking-[0.28em] transition-colors duration-500 ${
                       mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                     } ${
                       isLight
@@ -269,11 +216,19 @@ export function Navbar() {
                           : "text-white/70 hover:text-white"
                         : isActive
                         ? "text-black"
-                        : "text-black/50 hover:text-black"
+                        : "text-black/60 hover:text-black"
                     }`}
                     style={{ transitionDelay: mounted ? `${300 + index * 100}ms` : "0ms" }}
                   >
                     {item.label}
+                    {/* Linea dorata corta e centrata */}
+                    <span
+                      className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-px bg-amber-600 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        isActive || hoveredIndex === index
+                          ? "w-10 opacity-100"
+                          : "w-0 opacity-0"
+                      }`}
+                    />
                   </a>
                 );
               })}
@@ -294,9 +249,7 @@ export function Navbar() {
                 style={{ transitionDelay: mounted ? `${300 + NAV.length * 100 + 100}ms` : "0ms" }}
               >
                 <span className="relative z-10">Prenota un incontro</span>
-                <span
-                  className={`relative z-10 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1`}
-                >
+                <span className="relative z-10 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1">
                   →
                 </span>
               </a>
